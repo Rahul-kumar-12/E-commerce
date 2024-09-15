@@ -11,6 +11,8 @@ const app = express()
 app.use(cors({
     // origin: process.env.FRONTEND_URL,
     origin: 'https://e-commerce-mbnu.onrender.com',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
     credentials: true
 }))
 app.use(express.json())
@@ -21,13 +23,26 @@ const PORT = process.env.PORT || 8000
 
 //----------------------- code for deployement----------------------
 
+// if (process.env.NODE_ENV === "production") {
+//     const dirPath = path.resolve()
+//     app.use(express.static("./frontend/build"))
+//     app.get("*", (req, res) => {
+//         res.sendFile(path.resolve(dirPath, "./frontend/dist", "index.html"));
+//     })
+// }
+
+
+
 if (process.env.NODE_ENV === "production") {
-    const dirPath = path.resolve()
-    app.use(express.static("./frontend/build"))
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(dirPath, "./frontend/dist", "index.html"));
-    })
+    // Serve static files from the 'frontend/build' directory
+    app.use(express.static(path.join(__dirname, './frontend', 'build')));
+
+    // Handle all GET requests by serving the 'index.html' file from the 'build' directory
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, './frontend', 'build', 'index.html'));
+    });
 }
+
 
 
 
